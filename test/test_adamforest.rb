@@ -8,30 +8,33 @@ class TestAdamforest < Minitest::Test
     refute_nil ::Adamforest::VERSION
   end
 
-  def test_add
-    assert_equal add(5,5), 10
-  end
-
   def test_node_created
-    node = INode.new(nil, nil, 3)
+    node = InNode.new(nil, nil, 3)
     assert_nil node.left
     assert_nil node.right
     assert_equal node.splitPoint, 3
   end
 
-  def test_min_max
-    min,max = INode.getMinMax([1,7,2,3])
-    assert_equal min, 1
-    assert_equal max, 7
-  end
+  def test_initFromData  
 
-  def test_initFromData
-    node = INode.initFromData([1,2,3,4])
-    assert node.splitPoint.is_a?(Integer)
+    helperMock = Class.new do
+      def self.forestCountSplitPoint(data)
+        (data.min + data.max)/2.0
+      end
+
+      def self.nodeGroupBy(data, splitPoint)
+        data.group_by{ |x| x < splitPoint }
+      end
+    end
+
+    node = Node.initFromData([1,2,3], helperMock)
+    assert_equal node.to_a, [[1], [[2], [3]]]
+    #assert_equal node.splitPoint, 3
   end
 
   def test_node_groupBy
-    grouped = [1,2,3,4].nodeGroupBy(3)
+    grouped = ForestHelperService.nodeGroupBy([1,2,3,4], 3)
     assert_equal grouped[true], [1,2]
   end
+
 end

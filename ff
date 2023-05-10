@@ -1,0 +1,18 @@
+Run options: --seed 13010
+
+# Running:
+
+...F
+
+Finished in 0.022918s, 174.5336 runs/s, 261.8005 assertions/s.
+
+  1) Failure:
+TestAdamforest#test_initFromData [/home/adamo/scripts/rubyforest/adamforest/test/test_adamforest.rb:31]:
+--- expected
++++ actual
+@@ -1 +1 @@
+-{:left=>[1], :right=>[2], :SP=>1.5}
++[1, 2]
+
+
+4 runs, 6 assertions, 1 failures, 0 errors, 0 skips
