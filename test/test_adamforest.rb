@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-include AdamForest
 
 class TestAdamforest < Minitest::Test
+  include AdamForest
   def test_that_it_has_a_version_number
     refute_nil ::Adamforest::VERSION
   end
@@ -12,29 +12,27 @@ class TestAdamforest < Minitest::Test
     node = InNode.new(nil, nil, 3)
     assert_nil node.left
     assert_nil node.right
-    assert_equal node.splitPoint, 3
+    assert_equal node.split_point, 3
   end
 
-  def test_initFromData  
-
-    helperMock = Class.new do
-      def self.forestCountSplitPoint(data)
-        (data.min + data.max)/2.0
+  def test_init_from_data
+    helper_mock = Class.new do
+      def self.forest_count_split_point(data)
+        (data.min + data.max) / 2.0
       end
 
-      def self.nodeGroupBy(data, splitPoint)
-        data.group_by{ |x| x < splitPoint }
+      def self.node_group_by(data, split_point)
+        data.group_by { |x| x < split_point }
       end
     end
 
-    node = Node.initFromData([1,2,3], helperMock)
+    node = Node.init_from_data([1, 2, 3], helper_mock)
     assert_equal node.to_a, [[1], [[2], [3]]]
-    #assert_equal node.splitPoint, 3
+    # assert_equal node.splitPoint, 3
   end
 
-  def test_node_groupBy
-    grouped = ForestHelperService.nodeGroupBy([1,2,3,4], 3)
-    assert_equal grouped[true], [1,2]
+  def test_node_group_by
+    grouped = ForestHelperService.node_group_by([1, 2, 3, 4], 3)
+    assert_equal grouped[true], [1, 2]
   end
-
 end
