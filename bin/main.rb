@@ -7,9 +7,12 @@ include AdamForest
 
 puts "main"
 
-s = Node.init_from_data([[2, 2], [3, 3], [7, 1000]], ForestHelperServiceDimensional)
+s = Node.init_from_data([[1,1],[2, 2],[3, 3], [7, 1000]], ForestHelperServiceDimensional)
 
 p s.to_j
+
+
+p Node.evaluate_node(s, {}, {})
 
 #fs = ForestHelperServiceDimensional.forest_count_split_point([[2, 2], [3, 3], [7, 8]])
 #p ForestHelperServiceDimensional.node_group_by([[2, 2], [3, 3], [7, 8]], fs)

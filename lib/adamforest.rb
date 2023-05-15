@@ -3,6 +3,18 @@
 require_relative "adamforest/version"
 
 module AdamForest
+  class Forest
+    def self.init_from_data(data, forest_helper = ForestHelperService)
+      # create more trees and return as array
+
+    end
+
+    def self.evaluate_forest(forest)
+      # call Node.evaluate_node on whole forest, then merge with sum
+      # a_hash.merge(b_hash){ |k, a_value, b_value| a_value + b_value }
+    end
+  end
+
   class Node
     def self.init_from_data(data, forest_helper = ForestHelperService)
       return OutNode.new(data) if data.nil? || data.length <= 1
@@ -12,8 +24,19 @@ module AdamForest
       InNode.new(
         init_from_data(left_group, forest_helper),
         init_from_data(right_group, forest_helper),
-        split_point
+        split_point,
       )
+    end
+
+    def self.evaluate_node(node, leftsuma, rightsuma)
+      # this evaluates recursivelly one tree
+      # TODO: TOTO NEFUNGUJE
+      return {} if node.nil?
+      # here could be tally, but it returns 1 not 0
+      return node.data.map { |x| [x, 0] }.to_h if node.instance_of?(OutNode)
+      l = evaluate_node(node.left, {}, {}).map { |k, v| [k, v + 1] }.to_h
+      r = evaluate_node(node.right, {}, {}).map { |k, v| [k, v + 1] }.to_h
+      return l.merge(r)
     end
   end
 
