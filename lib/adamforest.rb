@@ -83,7 +83,6 @@ module AdamForest
     end
 
     def self.node_group_by(data, split_point_d)
-      p split_point_d.dimension
       data.group_by { |x| x[split_point_d.dimension] < split_point_d.split_point }
     end
   end
