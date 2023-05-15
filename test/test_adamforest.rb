@@ -35,4 +35,10 @@ class TestAdamforest < Minitest::Test
     grouped = ForestHelperService.node_group_by([1, 2, 3, 4], 3)
     assert_equal grouped[true], [1, 2]
   end
+
+  def test_dimensional_group_by
+    splitD = SplitPointD.new(7, 1)
+    res = ForestHelperServiceDimensional.node_group_by([[2, 2], [3, 3], [7, 8]], splitD)
+    assert_equal res[false], [[7,8]]
+  end
 end

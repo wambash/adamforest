@@ -43,7 +43,7 @@ module AdamForest
     attr_reader :left, :right, :split_point
 
     def to_j
-      { "left": @left.to_j, "right": @right.to_j, "SP": @split_point }
+      { "left": @left.to_j, "right": @right.to_j, "SP": @split_point.to_j }
     end
 
     def to_a
@@ -62,17 +62,29 @@ module AdamForest
     end
   end
 
-  class ForestHelperServiceDimensional
-    def self.forest_count_split_point(data)
-      # in: [[1,10], [2,20]]
-      # out(2, 0)
-      # TODO: tady random split point skrz dimenze, split point by mel vratit asi hodnotu a dimenzi
-      # nejprve se random vybre dimenze z (0, n) kde n je velikost zanoreneho pole
-      # pak se flatne to pole jen skrz dimenzi n a vybere se random point a vrati
+  class SplitPointD
+    def initialize(split_point, dimension)
+      @split_point = split_point
+      @dimension = dimension
     end
 
-    def self.node_group_by(data, split_point)
-      # TODO: tady vemzes split point a udelas group by skrz dimenzi ve split pointu
+    def to_j
+      { "SP": @split_point, "D": @dimension }
+    end
+
+    attr_reader :split_point, :dimension
+  end
+
+  class ForestHelperServiceDimensional
+    def self.forest_count_split_point(data)
+      dimension = data[0].kind_of?(Array) ? data[0].length : ForestHelperService.forest_count_split_point(data)
+      random_dimension = rand(0...dimension)
+      SplitPointD.new(data.map { |x| x[random_dimension] }.sample, random_dimension)
+    end
+
+    def self.node_group_by(data, split_point_d)
+      p split_point_d.dimension
+      data.group_by { |x| x[split_point_d.dimension] < split_point_d.split_point }
     end
   end
 end
