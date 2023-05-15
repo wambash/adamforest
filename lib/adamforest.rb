@@ -79,7 +79,8 @@ module AdamForest
     def self.forest_count_split_point(data)
       dimension = data[0].kind_of?(Array) ? data[0].length : ForestHelperService.forest_count_split_point(data)
       random_dimension = rand(0...dimension)
-      SplitPointD.new(data.map { |x| x[random_dimension] }.sample, random_dimension)
+      min, max = data.flat_map { |x| x[random_dimension] }.minmax
+      SplitPointD.new(rand(min..max), random_dimension)
     end
 
     def self.node_group_by(data, split_point_d)
