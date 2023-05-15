@@ -30,8 +30,7 @@ module AdamForest
 
     def self.evaluate_node(node, leftsuma, rightsuma)
       # this evaluates recursivelly one tree
-      # TODO: TOTO NEFUNGUJE
-      return {} if node.nil?
+      return {} if node.instance_of?(OutNode) && node.data.nil?
       # here could be tally, but it returns 1 not 0
       return node.data.map { |x| [x, 0] }.to_h if node.instance_of?(OutNode)
       l = evaluate_node(node.left, {}, {}).map { |k, v| [k, v + 1] }.to_h
