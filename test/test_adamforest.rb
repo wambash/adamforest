@@ -41,4 +41,23 @@ class TestAdamforest < Minitest::Test
     res = ForestHelperServiceDimensional.node_group_by([[2, 2], [3, 3], [7, 8]], splitD)
     assert_equal res[false], [[7,8]]
   end
+
+  def test_forest_creation
+
+
+    helper_mock = Class.new do
+      def self.forest_count_split_point(data)
+        min, max = data.flat_map { |x| x[0] }.minmax
+        rand(min..max)
+      end
+
+      def self.node_group_by(data, split_point)
+        data.group_by { |x| x[0] < split_point }
+      end
+    end
+
+    forest = Forest.init_from_data([[2, 2], [3, 3], [7, 8]], 3, helper_mock)
+
+    assert_equal forest.count, 3
+  end
 end

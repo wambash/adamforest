@@ -4,9 +4,9 @@ require_relative "adamforest/version"
 
 module AdamForest
   class Forest
-    def self.init_from_data(data, forest_helper = ForestHelperService)
+    def self.init_from_data(data, count, forest_helper = ForestHelperService)
       # create more trees and return as array
-
+      Array.new(count, Node.init_from_data(data, forest_helper))
     end
 
     def self.evaluate_forest(forest)
