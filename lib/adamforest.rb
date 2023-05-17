@@ -7,8 +7,6 @@ require_relative "adamforest/node"
 module AdamForest
   include Node
   include Helper
-  @@forest_helper = Helper
-  attr_accessor :forest_helper
 
   class Forest
     attr_reader :trees, :forest_helper
@@ -16,7 +14,7 @@ module AdamForest
     def initialize(
       data,
       trees_count: 100,
-      forest_helper: @@forest_helper,
+      forest_helper: Helper,
       batch_size: 128,
       max_depth: Math.log(batch_size, 2).ceil,
       random: Random
