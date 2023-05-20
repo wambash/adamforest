@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "adamforest/services/helper_mock"
 
 class Float
     def to_j
@@ -43,22 +44,10 @@ class TestAdamforest < Minitest::Test
     assert_equal res[1], [[7, 8]]
   end
 
-  class HelperMock
-    def self.forest_count_split_point(data)
-      min, max = data.flat_map { |x| x[0] }.minmax
-      (min + max) / 2.0
-    end
-
-    def self.element_decision(element, split_point)
-      element[0] < split_point
-    end
-  end
-
   def test_forest_creation
     forest = Forest.new([[2, 2], [3, 3], [7, 8]], trees_count: 3, forest_helper: HelperMock)
     assert_equal forest.trees.count, 3
   end
-
 
   def test_evaluate_depth
     s = Node.init_from_data([[1, 1], [2, 2], [3, 3], [7, 1000]], forest_helper: HelperMock, max_depth: 3)
