@@ -2,15 +2,17 @@
 
 require "test_helper"
 require "adamforest/services/helper_mock"
+require "adamforest/services/helper"
 
 class Float
-    def to_j
-      self
-    end
+  def to_h
+    self
+  end
 end
 
 class TestAdamforest < Minitest::Test
   include AdamForest
+
   def test_that_it_has_a_version_number
     refute_nil ::Adamforest::VERSION
   end
@@ -51,7 +53,6 @@ class TestAdamforest < Minitest::Test
 
   def test_evaluate_depth
     s = Node.init_from_data([[1, 1], [2, 2], [3, 3], [7, 1000]], forest_helper: HelperMock, max_depth: 3)
-    p s.to_j
     assert_equal 3, s.evaluate_depth([2, 2], forest_helper: HelperMock)
     assert_equal 1, s.evaluate_depth([4, 8], forest_helper: HelperMock)
     assert_equal 2, s.evaluate_depth([1.5, 8], forest_helper: HelperMock)
@@ -60,5 +61,27 @@ class TestAdamforest < Minitest::Test
   def test_evaluate_forest
     forest = Forest.new([[1, 1], [2, 2], [3, 3], [7, 1000]], trees_count: 3, forest_helper: HelperMock, max_depth: 3)
     assert_equal [3, 3, 3], forest.evaluate_forest([2, 2])
+  end
+
+  def test_path_length_c
+    res4 = Helper.evaluate_path_length_c(4)
+    assert_operator 2, :<, res4
+
+    res7 = Helper.evaluate_path_length_c(7)
+    assert_operator 3, :<, res7
+
+    res0 = Helper.evaluate_path_length_c(0)
+    assert_equal res0, 0
+
+    res2 = Helper.evaluate_path_length_c(2)
+    assert_equal res2, 1
+
+    res1 = Helper.evaluate_path_length_c(1)
+    assert_equal res1, 0
+  end
+
+  def test_helper_mock_ahoj
+    res = HelperMock.evaluate_path_length_c(5)
+    assert_equal res, 0
   end
 end

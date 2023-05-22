@@ -13,4 +13,4 @@ p [[2.5, 1.5], [2, 100], [7, 50]].map { |x|
                                           r.sum / r.count.to_f
                                         }
 evaluation = forest.evaluate_forest([2.5, 1.5])
-#p evaluation
+p evaluation

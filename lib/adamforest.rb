@@ -2,6 +2,7 @@
 
 require_relative "adamforest/version"
 require_relative "adamforest/services/helper"
+require_relative "adamforest/services/helper_mock"
 require_relative "adamforest/node"
 
 module AdamForest

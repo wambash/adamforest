@@ -9,4 +9,8 @@ module HelperMock
   def self.element_decision(element, split_point)
     element[0] < split_point
   end
+
+  def self.evaluate_path_length_c _
+    0
+  end
 end
