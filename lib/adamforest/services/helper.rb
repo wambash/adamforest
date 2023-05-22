@@ -10,6 +10,10 @@ module Helper
     SplitPointD.new(rand(min..max), random_dimension)
   end
 
+  def self.get_node_groups(data)
+    data.group_by { |x| element_decision(x, split_point) }
+  end
+
   def self.element_decision(element, split_point_d)
     element[split_point_d.dimension] < split_point_d.split_point
   end
@@ -27,5 +31,13 @@ module Helper
     return 0 if batch_size < 2
 
     2 * harmonic_number(batch_size - 1) - 2 * (batch_size - 1) / batch_size
+  end
+
+  def self.depth_transform(group, depth)
+    depth + 1
+  end
+
+  def self.end_condition(data, depth, max_depth)
+    depth == max_depth || data.length <= 1
   end
 end

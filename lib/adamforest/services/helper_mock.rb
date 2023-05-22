@@ -10,7 +10,25 @@ module HelperMock
     element[0] < split_point
   end
 
-  def self.evaluate_path_length_c _
+  def self.get_node_groups(data)
+    data.group_by { |x| element_decision(x, forest_count_split_point(data)) }
+  end
+
+  def self.get_decision(data)
+    sp = forest_count_split_point(data)
+
+    ->(x) { element_decision(x, sp) }
+  end
+
+  def self.evaluate_path_length_c(_)
     0
+  end
+
+  def self.depth_transform(group, depth)
+    depth + 1
+  end
+
+  def self.end_condition(data, depth, max_depth)
+    depth == max_depth || data.length <= 1
   end
 end

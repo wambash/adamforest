@@ -17,13 +17,6 @@ class TestAdamforest < Minitest::Test
     refute_nil ::Adamforest::VERSION
   end
 
-  def test_node_created
-    node = InNode.new(nil, nil, 3)
-    assert_nil node.left
-    assert_nil node.right
-    assert_equal node.split_point, 3
-  end
-
   def test_init_from_data
     helper_mock = Class.new do
       def self.forest_count_split_point(data)
@@ -33,6 +26,25 @@ class TestAdamforest < Minitest::Test
       def self.element_decision(element, split_point)
         element < split_point
       end
+
+      def self.end_condition(data, depth, max_depth)
+        p [data, depth, max_depth]
+        depth == max_depth || data.length <= 1
+      end
+
+      def self.get_node_groups(data)
+        data.group_by { |x| element_decision(x, forest_count_split_point(data)) }
+      end
+
+      def self.depth_transform(group, depth)
+        depth + 1
+      end
+
+      def self.get_decision(data)
+        sp = forest_count_split_point(data)
+
+        ->(x) { element_decision(x, sp) }
+      end
     end
 
     node = Node.init_from_data([1, 2, 3], forest_helper: helper_mock)
@@ -41,9 +53,8 @@ class TestAdamforest < Minitest::Test
   end
 
   def test_dimensional_group_by
-    split_d = SplitPointD.new(7, 1)
-    res = Node.node_group_by([[2, 2], [3, 3], [7, 8]], split_d.split_point, forest_helper: HelperMock)
-    assert_equal res[1], [[7, 8]]
+    res = HelperMock.get_node_groups([[2, 2], [3, 3], [7, 8]])
+    assert_equal res[false], [[7, 8]]
   end
 
   def test_forest_creation
