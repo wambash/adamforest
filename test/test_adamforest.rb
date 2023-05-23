@@ -18,37 +18,8 @@ class TestAdamforest < Minitest::Test
   end
 
   def test_init_from_data
-    helper_mock = Class.new do
-      def self.forest_count_split_point(data)
-        (data.min + data.max) / 2.0
-      end
-
-      def self.element_decision(element, split_point)
-        element < split_point
-      end
-
-      def self.end_condition(data, depth, max_depth)
-        p [data, depth, max_depth]
-        depth == max_depth || data.length <= 1
-      end
-
-      def self.get_node_groups(data)
-        data.group_by { |x| element_decision(x, forest_count_split_point(data)) }
-      end
-
-      def self.depth_transform(group, depth)
-        depth + 1
-      end
-
-      def self.get_initial_decision(data)
-        sp = forest_count_split_point(data)
-
-        ->(x) { element_decision(x, sp) }
-      end
-    end
-
-    node = Node.init_from_data([1, 2, 3], forest_helper: helper_mock)
-    assert_equal node.to_a, [[1], [[2], [3]]]
+    node = Node.init_from_data([1, 2, 3], forest_helper: HelperMock)
+    assert_equal node.to_a, [[[1, 3]], [2]]
     # assert_equal node.splitPoint, 3
   end
 
@@ -94,5 +65,15 @@ class TestAdamforest < Minitest::Test
   def test_helper_mock_ahoj
     res = HelperMock.evaluate_path_length_c(5)
     assert_equal res, 0
+  end
+
+  def test_helper_evaluate_anomaly_score_s
+    # if sample size -1 == average, then 0
+    # [1,2,3] are depths of 3 trees
+    res0 = Helper.evaluate_anomaly_score_s([1, 2, 3], 3)
+    assert_equal 0, res0
+
+    # TODO: TEST REST
+
   end
 end

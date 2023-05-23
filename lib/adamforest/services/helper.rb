@@ -37,6 +37,11 @@ module Helper
     depth + 1
   end
 
+  def self.out_node_depth_adjust(data, depth)
+    # when the traversal reaches a predefined height limit hlim, the return value is e plus an adjustment c(Size)
+    depth + evaluate_path_length_c(data.length)
+  end
+
   def self.get_initial_decision(data)
     sp = forest_count_split_point(data)
 
@@ -49,5 +54,19 @@ module Helper
 
   def self.end_condition(data, depth, max_depth)
     depth == max_depth || data.length <= 1
+  end
+
+  # E(h(x)) is the average of h(x) from a collection of iTrees
+  def self.evaluate_average_e(depths)
+    depths.sum(0.0) / depths.length
+  end
+
+  # depths are the depths returned by evalute_forest
+  def self.evaluate_anomaly_score_s(depths, batch_size)
+    return 1 if evaluate_average_e(depths).zero?
+    return 0 if evaluate_average_e(depths) == batch_size - 1
+    return 0.5 if evaluate_average_e(depths) == evaluate_path_length_c(batch_size)
+
+    2**-(evaluate_average_e(depths) / evaluate_path_length_c(batch_size))
   end
 end

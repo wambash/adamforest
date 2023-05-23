@@ -4,7 +4,9 @@ module Node
   include Helper
 
   def self.init_from_data(data, forest_helper: Helper, depth: 0, max_depth: Math.log(data.length, 2).ceil)
-    return OutNode.new(data, depth) if forest_helper.end_condition(data, depth, max_depth)
+    if forest_helper.end_condition(data, depth, max_depth)
+      return OutNode.new(data, forest_helper.out_node_depth_adjust(data, depth))
+    end
 
     node_groups = forest_helper.get_node_groups(data)
 

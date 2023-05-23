@@ -28,11 +28,24 @@ module HelperMock
     0
   end
 
+  def self.out_node_depth_adjust(data, depth)
+    # when the traversal reaches a predefined height limit hlim, the return value is e plus an adjustment c(Size)
+    depth + evaluate_path_length_c(data.length)
+  end
+
   def self.depth_transform(group, depth)
     depth + 1
   end
 
   def self.end_condition(data, depth, max_depth)
     depth == max_depth || data.length <= 1
+  end
+
+  def self.evaluate_average_e(depths)
+    Math.avg(depths)
+  end
+
+  def self.evaluate_anomaly_score_s(depths)
+    1
   end
 end

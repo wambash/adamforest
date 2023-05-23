@@ -28,5 +28,10 @@ module AdamForest
     def evaluate_forest(element)
       trees.map { |tree| Node.evaluate_path_length(tree, element, forest_helper: @forest_helper) }
     end
+
+    def evaluate_forest_return_depths(element)
+      # TODO: Tady problem node.nil? obcas je outnode nil, pak je potreba vratit velkou hodnotu 
+      evaluate_forest(element).flat_map { |node| node.nil? ? 1000 : node.depth }
+    end
   end
 end
