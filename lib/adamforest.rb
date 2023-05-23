@@ -26,8 +26,7 @@ module AdamForest
     end
 
     def evaluate_forest(element)
-      # TODO: UDELEJ FUNKCI V NODE, BUDE EVALUATE A BUDE TAM IF NA ZAKLADE SERVISKY
-      trees.map { |tree| tree.evaluate_depth(element, forest_helper: @forest_helper) }
+      trees.map { |tree| Node.evaluate_path_length(tree, element, forest_helper: @forest_helper) }
     end
   end
 end

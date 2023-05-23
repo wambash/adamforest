@@ -11,7 +11,7 @@ module Helper
   end
 
   def self.get_node_groups(data)
-    data.group_by { |x| element_decision(x, split_point) }
+    data.group_by { |x| element_decision(x, forest_count_split_point(data)) }
   end
 
   def self.element_decision(element, split_point_d)
@@ -35,6 +35,16 @@ module Helper
 
   def self.depth_transform(group, depth)
     depth + 1
+  end
+
+  def self.get_initial_decision(data)
+    sp = forest_count_split_point(data)
+
+    ->(x) { element_decision(x, sp) }
+  end
+
+  def self.decide(data, decision)
+    decision.call(data)
   end
 
   def self.end_condition(data, depth, max_depth)

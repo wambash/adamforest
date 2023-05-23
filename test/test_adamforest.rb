@@ -40,7 +40,7 @@ class TestAdamforest < Minitest::Test
         depth + 1
       end
 
-      def self.get_decision(data)
+      def self.get_initial_decision(data)
         sp = forest_count_split_point(data)
 
         ->(x) { element_decision(x, sp) }
@@ -64,14 +64,14 @@ class TestAdamforest < Minitest::Test
 
   def test_evaluate_depth
     s = Node.init_from_data([[1, 1], [2, 2], [3, 3], [7, 1000]], forest_helper: HelperMock, max_depth: 3)
-    assert_equal 3, s.evaluate_depth([2, 2], forest_helper: HelperMock)
-    assert_equal 1, s.evaluate_depth([4, 8], forest_helper: HelperMock)
-    assert_equal 2, s.evaluate_depth([1.5, 8], forest_helper: HelperMock)
+    assert_equal 3, Node.evaluate_path_length(s, [2, 2], forest_helper: HelperMock).depth
+    assert_equal 1, Node.evaluate_path_length(s, [4, 8], forest_helper: HelperMock).depth
+    assert_equal 2, Node.evaluate_path_length(s, [1.5, 8], forest_helper: HelperMock).depth
   end
 
   def test_evaluate_forest
     forest = Forest.new([[1, 1], [2, 2], [3, 3], [7, 1000]], trees_count: 3, forest_helper: HelperMock, max_depth: 3)
-    assert_equal [3, 3, 3], forest.evaluate_forest([2, 2])
+    assert_equal([3, 3, 3], forest.evaluate_forest([2, 2]).flat_map(&:depth))
   end
 
   def test_path_length_c

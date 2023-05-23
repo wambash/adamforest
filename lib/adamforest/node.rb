@@ -9,11 +9,18 @@ module Node
     node_groups = forest_helper.get_node_groups(data)
 
     InNode.new(
-      node_groups.transform_values { |group|
+      node_groups.transform_values do |group|
         init_from_data(group, forest_helper: forest_helper, depth: forest_helper.depth_transform(group, depth), max_depth: max_depth)
-      },
-      forest_helper.get_decision(data)
+      end,
+      forest_helper.get_initial_decision(data)
     )
+  end
+
+  def self.evaluate_path_length(node, element, forest_helper: Helper)
+    return node if node.is_a?(OutNode) || node.nil?
+
+    next_node_branch = forest_helper.decide(element, node.decision)
+    evaluate_path_length(node.branches[next_node_branch], element)
   end
 
   OutNode = Data.define(:data, :depth) do

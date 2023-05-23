@@ -14,10 +14,14 @@ module HelperMock
     data.group_by { |x| element_decision(x, forest_count_split_point(data)) }
   end
 
-  def self.get_decision(data)
+  def self.get_initial_decision(data)
     sp = forest_count_split_point(data)
 
     ->(x) { element_decision(x, sp) }
+  end
+
+  def self.decide(data, decision)
+    decision.call(data)
   end
 
   def self.evaluate_path_length_c(_)
