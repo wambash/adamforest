@@ -10,12 +10,14 @@ module Helper
     SplitPointD.new(rand(min..max), random_dimension)
   end
 
-  def self.get_node_groups(data)
-    { true => [], false => [] }.merge(data.group_by { |x| element_decision(x, forest_count_split_point(data)) })
+  def self.get_initial_decision(data)
+    sp = forest_count_split_point(data)
+
+    ->(x) { x[sp.dimension] < sp.split_point }
   end
 
-  def self.element_decision(element, split_point_d)
-    element[split_point_d.dimension] < split_point_d.split_point
+  def self.get_node_groups(data, decision_fun)
+    { true => [], false => [] }.merge(data.group_by(&decision_fun))
   end
 
   def self.harmonic_number(num)
@@ -42,16 +44,6 @@ module Helper
     depth + evaluate_path_length_c(data.length)
   end
 
-  def self.get_initial_decision(data)
-    sp = forest_count_split_point(data)
-
-    ->(x) { element_decision(x, sp) }
-  end
-
-  def self.decide(data, decision)
-    decision.call(data)
-  end
-
   def self.end_condition(data, depth, max_depth)
     depth == max_depth || data.length <= 1
   end
@@ -63,6 +55,6 @@ module Helper
 
   # depths are the depths returned by evalute_forest
   def self.evaluate_anomaly_score_s(depths, batch_size)
-    2**-(evaluate_average_e(depths) / evaluate_path_length_c(batch_size))
+    2 ** -(evaluate_average_e(depths) / evaluate_path_length_c(batch_size))
   end
 end

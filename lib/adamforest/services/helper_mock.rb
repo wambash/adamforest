@@ -6,22 +6,14 @@ module HelperMock
     (min + max) / 2.0
   end
 
-  def self.element_decision(element, split_point)
-    element[0] < split_point
-  end
-
-  def self.get_node_groups(data)
-    data.group_by { |x| element_decision(x, forest_count_split_point(data)) }
+  def self.get_node_groups(data, decision_fun)
+    { true => [], false => [] }.merge(data.group_by(&decision_fun))
   end
 
   def self.get_initial_decision(data)
     sp = forest_count_split_point(data)
 
-    ->(x) { element_decision(x, sp) }
-  end
-
-  def self.decide(data, decision)
-    decision.call(data)
+    ->(x) { x[0] < sp }
   end
 
   def self.evaluate_path_length_c(_)
@@ -42,10 +34,10 @@ module HelperMock
   end
 
   def self.evaluate_average_e(depths)
-    Math.avg(depths)
+    depths.sum(0.0) / depths.length
   end
 
   def self.evaluate_anomaly_score_s(depths)
-    1
+    depths.sum
   end
 end

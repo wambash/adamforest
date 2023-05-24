@@ -18,13 +18,15 @@ class TestAdamforest < Minitest::Test
   end
 
   def test_init_from_data
-    node = Node.init_from_data([1, 2, 3], forest_helper: HelperMock)
-    assert_equal node.to_a, [[[1, 3]], [2]]
+    node = Node.init_from_data([[1], [2], [3]], forest_helper: HelperMock)
+    assert_equal node.to_a, [[[1]], [[[2]], [[3]]]]
     # assert_equal node.splitPoint, 3
   end
 
   def test_dimensional_group_by
-    res = HelperMock.get_node_groups([[2, 2], [3, 3], [7, 8]])
+    data = [[2, 2], [3, 3], [7, 8]]
+    decision_fun = HelperMock.get_initial_decision(data)
+    res = HelperMock.get_node_groups(data, decision_fun)
     assert_equal res[false], [[7, 8]]
   end
 
@@ -78,5 +80,12 @@ class TestAdamforest < Minitest::Test
 
     res05 = Helper.evaluate_anomaly_score_s([Helper.evaluate_path_length_c(100)], 100)
     assert_equal res05, 0.5
+  end
+
+  def test_forest_sum_depths
+    forest = Forest.new([[2, 2], [3, 3], [7, 8]], trees_count: 3, forest_helper: HelperMock)
+    depths = forest.evaluate_forest_return_depths([2, 2])
+    res = HelperMock.evaluate_anomaly_score_s(depths)
+    assert_equal res, 3 * 2
   end
 end
