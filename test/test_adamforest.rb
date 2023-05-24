@@ -70,10 +70,13 @@ class TestAdamforest < Minitest::Test
   def test_helper_evaluate_anomaly_score_s
     # if sample size -1 == average, then 0
     # [1,2,3] are depths of 3 trees
-    res0 = Helper.evaluate_anomaly_score_s([1, 2, 3], 3)
-    assert_equal 0, res0
+    res0 = Helper.evaluate_anomaly_score_s([9999], 10000)
+    assert_in_delta res0, 0
 
-    # TODO: TEST REST
+    res1 = Helper.evaluate_anomaly_score_s([-1, 0, 1], 3)
+    assert_equal res1, 1
 
+    res05 = Helper.evaluate_anomaly_score_s([Helper.evaluate_path_length_c(100)], 100)
+    assert_equal res05, 0.5
   end
 end

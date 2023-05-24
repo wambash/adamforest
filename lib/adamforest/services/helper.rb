@@ -63,10 +63,6 @@ module Helper
 
   # depths are the depths returned by evalute_forest
   def self.evaluate_anomaly_score_s(depths, batch_size)
-    return 1 if evaluate_average_e(depths).zero?
-    return 0 if evaluate_average_e(depths) == batch_size - 1
-    return 0.5 if evaluate_average_e(depths) == evaluate_path_length_c(batch_size)
-
     2**-(evaluate_average_e(depths) / evaluate_path_length_c(batch_size))
   end
 end

@@ -30,8 +30,7 @@ module AdamForest
     end
 
     def evaluate_forest_return_depths(element)
-      # TODO: Tady problem node.nil? obcas je outnode nil, pak je potreba vratit velkou hodnotu 
-      evaluate_forest(element).map &:depth
+      evaluate_forest(element).map(&:depth)
     end
   end
 end
