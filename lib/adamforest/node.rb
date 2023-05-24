@@ -19,7 +19,7 @@ module Node
   end
 
   def self.evaluate_path_length(node, element, forest_helper: Helper)
-    return node if node.is_a?(OutNode) || node.nil?
+    return node if node.is_a?(OutNode)
 
     next_node_branch = forest_helper.decide(element, node.decision)
     evaluate_path_length(node.branches[next_node_branch], element)
