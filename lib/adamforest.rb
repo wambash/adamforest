@@ -1,90 +1,37 @@
 # frozen_string_literal: true
 
 require_relative "adamforest/version"
+require_relative "adamforest/services/helper"
+require_relative "adamforest/services/helper_mock"
+require_relative "adamforest/node"
 
 module AdamForest
-  class Node
-    def self.init_from_data(data, forest_helper = ForestHelperService)
-      return OutNode.new(data) if data.nil? || data.length <= 1
+  include Node
+  include Helper
 
-      split_point = forest_helper.forest_count_split_point(data)
-      left_group, right_group = forest_helper.node_group_by(data, split_point).values_at(true, false)
-      InNode.new(
-        init_from_data(left_group, forest_helper),
-        init_from_data(right_group, forest_helper),
-        split_point
-      )
-    end
-  end
+  class Forest
+    attr_reader :trees, :forest_helper, :batch_size
 
-  class OutNode
-    def initialize(data)
-      @data = data
-    end
-
-    attr_reader :data
-
-    def to_j
-      @data
+    def initialize(
+      data,
+      trees_count: 100,
+      forest_helper: Helper,
+      batch_size: data.length < 128 ? data.length : 128,
+      max_depth: Math.log(batch_size, 2).ceil,
+      random: Random
+    )
+      # create more trees and return as array
+      @forest_helper = forest_helper
+      @trees = trees_count.times.map { |_| Node.init_from_data(data.sample(batch_size, random: random), forest_helper: @forest_helper, max_depth: max_depth) }
+      @batch_size = batch_size
     end
 
-    def to_a
-      @data
-    end
-  end
-
-  class InNode
-    def initialize(left, right, split_point)
-      @left = left
-      @right = right
-      @split_point = split_point
+    def evaluate_forest(element)
+      trees.map { |tree| Node.evaluate_path_length(tree, element, forest_helper: @forest_helper) }
     end
 
-    attr_reader :left, :right, :split_point
-
-    def to_j
-      { "left": @left.to_j, "right": @right.to_j, "SP": @split_point.to_j }
-    end
-
-    def to_a
-      [@left.to_a, @right.to_a]
-    end
-  end
-
-  class ForestHelperService
-    def self.forest_count_split_point(data)
-      min, max = data.minmax
-      rand(min..max)
-    end
-
-    def self.node_group_by(data, split_point)
-      data.group_by { |x| x < split_point }
-    end
-  end
-
-  class SplitPointD
-    def initialize(split_point, dimension)
-      @split_point = split_point
-      @dimension = dimension
-    end
-
-    def to_j
-      { "SP": @split_point, "D": @dimension }
-    end
-
-    attr_reader :split_point, :dimension
-  end
-
-  class ForestHelperServiceDimensional
-    def self.forest_count_split_point(data)
-      dimension = data[0].kind_of?(Array) ? data[0].length : ForestHelperService.forest_count_split_point(data)
-      random_dimension = rand(0...dimension)
-      min, max = data.flat_map { |x| x[random_dimension] }.minmax
-      SplitPointD.new(rand(min..max), random_dimension)
-    end
-
-    def self.node_group_by(data, split_point_d)
-      data.group_by { |x| x[split_point_d.dimension] < split_point_d.split_point }
+    def evaluate_forest_return_depths(element)
+      evaluate_forest(element).map(&:depth)
     end
   end
 end
