@@ -5,25 +5,21 @@ module QuickSort
     data.first
   end
 
-  def self.get_node_groups(data, decision_fun)
-    { -1 => [], 0 => [], 1 => [] }.merge(data.group_by(&decision_fun))
-  end
-
-  def self.get_initial_decision(data)
+  def self.get_data_decision(data)
     sp = forest_count_split_point(data)
 
     ->(x) { x <=> sp }
   end
 
-  def self.out_node_depth_adjust(data, depth)
-    depth
+  def self.get_node_groups(data, decision_fun: get_data_decision(data))
+    { -1 => [], 0 => [], 1 => [] }.merge(data.group_by(&decision_fun))
   end
 
-  def self.depth_transform(group, depth)
-    depth + 1
+  def self.get_sample(data, batch_size, random: Random)
+    data.sample(batch_size, random: random)
   end
 
-  def self.end_condition(data, depth, max_depth)
+  def self.end_condition(data, max_depth)
     data.all? { |x| x == data.first }
   end
 end
