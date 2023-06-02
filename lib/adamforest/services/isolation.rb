@@ -44,15 +44,6 @@ module Isolation
     2 * harmonic_number(batch_size - 1) - 2 * (batch_size - 1) / batch_size
   end
 
-  def self.depth_transform(group, depth)
-    depth + 1
-  end
-
-  def self.out_node_depth_adjust(data, depth)
-    # when the traversal reaches a predefined height limit hlim, the return value is e plus an adjustment c(Size)
-    depth + evaluate_path_length_c(data.length)
-  end
-
   def self.end_condition(data_point, max_depth)
     data_point.depth == max_depth || data_point.data.length <= 1
   end
