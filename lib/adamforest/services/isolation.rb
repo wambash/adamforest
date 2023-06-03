@@ -13,7 +13,7 @@ module Isolation
     dimension = data[0].length
     random_dimension = rand(0...dimension)
     min, max = data.flat_map { |x| x[random_dimension] }.minmax
-    SplitPointD.new(rand(min..max), random_dimension)
+    SplitPointD.new(rand(min.to_f..max.to_f), random_dimension)
   end
 
   def self.get_data_decision(data_point)
