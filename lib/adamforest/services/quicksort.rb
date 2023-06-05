@@ -2,7 +2,7 @@
 
 module QuickSort
   def self.forest_count_split_point(data)
-    data.first
+    data.is_a?(Array) ? data.first : data
   end
 
   def self.get_data_decision(data)
