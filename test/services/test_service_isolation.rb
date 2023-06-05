@@ -6,6 +6,23 @@ require "adamforest/services/isolation"
 class TestServiceIsolation < Minitest::Test
   include AdamForest
 
+  def test_anomaly_score
+     input = [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [2, 2]]
+
+     forest = Forest.new(input, trees_count: 4)
+
+     anomaly = forest.evaluate_forest([2, 2])
+     a_depths = anomaly.map(&:depth)
+
+     regular = forest.evaluate_forest([1, 1])
+     r_depths = regular.map(&:depth)
+
+
+     assert_operator Isolation.evaluate_anomaly_score_s(a_depths, input.size), :>, 0.6
+     assert_operator Isolation.evaluate_anomaly_score_s(r_depths, input.size), :<, 0.5
+  end
+
+
   def test_isolation_anomaly_score_s
     # if sample size -1 == average, then 0
     # [1,2,3] are depths of 3 trees

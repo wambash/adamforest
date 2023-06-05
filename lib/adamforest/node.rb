@@ -6,8 +6,8 @@ module Node
   def self.init_from_data(data, forest_helper: Isolation, max_depth: Math.log(data.length, 2).ceil)
     return OutNode.new(data) if forest_helper.end_condition(data, max_depth)
 
-    split_point_d = forest_helper.forest_count_split_point(data)
-    node_groups = forest_helper.get_node_groups(data, decision_fun: forest_helper.get_data_decision(split_point_d))
+    split_point_d = forest_helper.split_point(data)
+    node_groups = forest_helper.group(data, split_point_d)
 
     InNode.new(
       node_groups.transform_values do |group|
@@ -18,10 +18,11 @@ module Node
   end
 
   def self.walk_nodes(node, element, forest_helper: Isolation)
-    return node if node.is_a?(OutNode)
+    return node.data if node.is_a?(OutNode)
 
-    next_node_branch = forest_helper.get_data_decision(node.split_point).call(element)
-    walk_nodes(node.branches[next_node_branch], element, forest_helper: forest_helper)
+    # a key of next branch
+    next_branch_key = forest_helper.decision(element, node.split_point)
+    walk_nodes(node.branches[next_branch_key], element, forest_helper: forest_helper)
   end
 
   OutNode = Data.define(:data) do

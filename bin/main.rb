@@ -15,16 +15,16 @@ forest = Forest.new(input, trees_count: 4)
 evaluation = forest.evaluate_forest([2, 2])
 p evaluation
 
-depths = evaluation.map(&:data).map(&:depth)
+depths = evaluation.map(&:depth)
 p depths
-s = Isolation.evaluate_anomaly_score_s(depths, forest.batch_size)
+s = Isolation.evaluate_anomaly_score_s(depths, input.size)
 p s
 
 p "______"
 evaluation = forest.evaluate_forest([1, 1])
-depths = evaluation.map(&:data).map(&:depth)
+depths = evaluation.map(&:depth)
 p depths
-s = Isolation.evaluate_anomaly_score_s(depths, forest.batch_size)
+s = Isolation.evaluate_anomaly_score_s(depths, input.size)
 p s
 
 input = [5, 8, 3, 4, 2, 7]

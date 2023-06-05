@@ -9,19 +9,23 @@ module Isolation
     DataPoint.new(depth: 0, data: data.sample(batch_size))
   end
 
-  def self.forest_count_split_point(data_point)
+  def self.split_point(data_point)
     dimension = data_point.data[0].length
     random_dimension = rand(0...dimension)
     min, max = data_point.data.flat_map { |x| x[random_dimension] }.minmax
     SplitPointD.new(rand(min.to_f..max.to_f), random_dimension)
   end
 
-  def self.get_data_decision(split_point_d)
+  def self.decision_function(split_point_d)
     ->(x) { x[split_point_d.dimension] < split_point_d.split_point }
   end
 
-  def self.get_node_groups(data_point, decision_fun: get_data_decision(0))
-    s = { true => [], false => [] }.merge(data_point.data.group_by(&decision_fun))
+  def self.decision(element, split_point_d)
+    decision_function(split_point_d).call(element)
+  end
+
+  def self.group(data_point, split_point_d)
+    s = { true => [], false => [] }.merge(data_point.data.group_by(&decision_function(split_point_d)))
     s.transform_values do |group|
       DataPoint.new(depth: data_point.depth + 1, data: group)
     end
