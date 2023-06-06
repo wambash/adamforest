@@ -3,6 +3,7 @@
 require "bundler/setup"
 require "adamforest"
 require "adamforest/services/quicksort"
+require "adamforest/services/novelty"
 
 include AdamForest
 
@@ -33,3 +34,7 @@ p forest.trees.first.to_h
 p forest.trees.first.to_a
 p forest.evaluate_forest(6)
 
+
+input = [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [2, 2]]
+forest = Forest.new(input, trees_count: 4, forest_helper: Novelty)
+fore.evaluate_forest()
