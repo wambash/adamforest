@@ -1,38 +1,37 @@
 # frozen_string_literal: true
 
 module Node
-  include Helper
+  include Isolation
 
-  def self.init_from_data(data, forest_helper: Helper, depth: 0, max_depth: Math.log(data.length, 2).ceil)
-    if forest_helper.end_condition(data, depth, max_depth)
-      return OutNode.new(data, forest_helper.out_node_depth_adjust(data, depth))
-    end
+  def self.init_from_data(data, forest_helper: Isolation, max_depth: Math.log(data.length, 2).ceil)
+    return OutNode.new(data) if forest_helper.end_condition(data, max_depth)
 
-    decision_fun = forest_helper.get_initial_decision(data)
-    node_groups = forest_helper.get_node_groups(data, decision_fun)
+    split_point = forest_helper.split_point(data)
+    node_groups = forest_helper.group(data, split_point)
 
     InNode.new(
       node_groups.transform_values do |group|
-        init_from_data(group, forest_helper: forest_helper, depth: forest_helper.depth_transform(group, depth), max_depth: max_depth)
+        init_from_data(group, forest_helper: forest_helper, max_depth: max_depth)
       end,
-      decision_fun
+      split_point
     )
   end
 
-  def self.evaluate_path_length(node, element, forest_helper: Helper)
-    return node if node.is_a?(OutNode)
+  def self.walk_nodes(node, element, forest_helper: Isolation)
+    return node.data if node.is_a?(OutNode)
 
-    next_node_branch = node.decision.call(element)
-    evaluate_path_length(node.branches[next_node_branch], element, forest_helper: forest_helper)
+    # a key of next branch
+    next_branch_key = forest_helper.decision(element, node.split_point)
+    walk_nodes(node.branches[next_branch_key], element, forest_helper: forest_helper)
   end
 
-  OutNode = Data.define(:data, :depth) do
+  OutNode = Data.define(:data) do
     def to_a
       data
     end
   end
 
-  InNode = Data.define(:branches, :decision) do
+  InNode = Data.define(:branches, :split_point) do
     def to_a
       branches.values.map(&:to_a)
     end

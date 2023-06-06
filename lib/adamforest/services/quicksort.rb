@@ -1,29 +1,23 @@
 # frozen_string_literal: true
 
 module QuickSort
-  def self.forest_count_split_point(data)
-    data.first
+  def self.split_point(data)
+    data.is_a?(Array) ? data.first : data
   end
 
-  def self.get_node_groups(data, decision_fun)
-    { -1 => [], 0 => [], 1 => [] }.merge(data.group_by(&decision_fun))
+  def self.decision(element, split)
+    element <=> split
   end
 
-  def self.get_initial_decision(data)
-    sp = forest_count_split_point(data)
-
-    ->(x) { x <=> sp }
+  def self.group(data, split)
+    { -1 => [], 0 => [], 1 => [] }.merge(data.group_by { |x| x <=> split })
   end
 
-  def self.out_node_depth_adjust(data, depth)
-    depth
+  def self.get_sample(data, batch_size, random: Random)
+    data.sample(batch_size, random: random)
   end
 
-  def self.depth_transform(group, depth)
-    depth + 1
-  end
-
-  def self.end_condition(data, depth, max_depth)
+  def self.end_condition(data, max_depth)
     data.all? { |x| x == data.first }
   end
 end
