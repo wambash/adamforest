@@ -6,11 +6,11 @@ module QuickSort
   end
 
   def self.decision(element, split)
-     element <=> split
+    element <=> split
   end
 
   def self.group(data, split)
-    { -1 => [], 0 => [], 1 => [] }.merge( data.group_by {|x| x <=> split} )
+    { -1 => [], 0 => [], 1 => [] }.merge(data.group_by { |x| x <=> split })
   end
 
   def self.get_sample(data, batch_size, random: Random)

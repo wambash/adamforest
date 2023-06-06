@@ -6,14 +6,14 @@ module Node
   def self.init_from_data(data, forest_helper: Isolation, max_depth: Math.log(data.length, 2).ceil)
     return OutNode.new(data) if forest_helper.end_condition(data, max_depth)
 
-    split_point_d = forest_helper.split_point(data)
-    node_groups = forest_helper.group(data, split_point_d)
+    split_point = forest_helper.split_point(data)
+    node_groups = forest_helper.group(data, split_point)
 
     InNode.new(
       node_groups.transform_values do |group|
         init_from_data(group, forest_helper: forest_helper, max_depth: max_depth)
       end,
-      split_point_d
+      split_point
     )
   end
 
