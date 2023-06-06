@@ -25,8 +25,9 @@ class TestAdamforest < Minitest::Test
 
   def test_dimensional_group_by
     data = [[2, 2], [3, 3], [7, 8]]
-    decision_fun = HelperMock.get_data_decision(data)
-    res = HelperMock.get_node_groups(data, decision_fun: decision_fun)
+
+    split_point = HelperMock.split_point(data)
+    res = HelperMock.group(data, split_point)
     assert_equal res[false], [[7, 8]]
   end
 
@@ -37,13 +38,13 @@ class TestAdamforest < Minitest::Test
 
   def test_evaluate_depth
     s = Node.init_from_data([[1, 1], [2, 2], [3, 3], [1000, 1000]], forest_helper: HelperMock, max_depth: 3)
-    assert_equal [[2, 2]], Node.walk_nodes(s, [2, 2], forest_helper: HelperMock).data
-    assert_equal [[3, 3]], Node.walk_nodes(s, [4, 8], forest_helper: HelperMock).data
-    assert_equal [[1000, 1000]], Node.walk_nodes(s, [600, 600], forest_helper: HelperMock).data
+    assert_equal [[2, 2]], Node.walk_nodes(s, [2, 2], forest_helper: HelperMock)
+    assert_equal [[3, 3]], Node.walk_nodes(s, [4, 8], forest_helper: HelperMock)
+    assert_equal [[1000, 1000]], Node.walk_nodes(s, [600, 600], forest_helper: HelperMock)
   end
 
   def test_evaluate_forest
     forest = Forest.new([[1, 1], [2, 2], [3, 3], [7, 1000]], trees_count: 3, forest_helper: HelperMock, max_depth: 5)
-    assert_equal([[[2, 2]], [[2, 2]], [[2, 2]]], forest.evaluate_forest([2, 2]).map(&:data))
+    assert_equal([[[2, 2]], [[2, 2]], [[2, 2]]], forest.evaluate_forest([2, 2]))
   end
 end

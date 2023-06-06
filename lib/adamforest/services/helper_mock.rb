@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
 module HelperMock
-  def self.forest_count_split_point(data)
+  def self.split_point(data)
     min, max = data.flat_map { |x| x[0] }.minmax
     (min + max) / 2.0
   end
 
   DataPoint = Data.define(:depth, :data)
 
-  def self.get_data_decision(data)
-    sp = forest_count_split_point(data)
-
+  def self.decision_function(sp)
     ->(x) { x[0] < sp }
   end
 
-  def self.get_node_groups(data, decision_fun: get_data_decision(data))
-    { true => [], false => [] }.merge(data.group_by(&decision_fun))
+  def self.decision(element, split_point_d)
+    decision_function(split_point_d).call(element)
+  end
+
+  def self.group(data, split_point)
+    { true => [], false => [] }.merge(data.group_by(&decision_function(split_point)))
   end
 
   def self.get_sample(data, batch_size, random: Random.new(1))
