@@ -29,7 +29,7 @@ s = Isolation.evaluate_anomaly_score_s(depths, input.size)
 p s
 
 input = [5, 8, 3, 4, 2, 7]
-forest = Forest.new(input, trees_count: 1, forest_helper: QuickSort)
+forest = Forest.new(input, trees_count: 1, forest_helper: QuickSort.new)
 p forest.trees.first.to_h
 p forest.trees.first.to_a
 p forest.evaluate_forest(6)
@@ -37,4 +37,4 @@ p forest.evaluate_forest(6)
 
 input = [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [2, 2]]
 forest = Forest.new(input, trees_count: 4, forest_helper: Novelty)
-fore.evaluate_forest()
+forest.evaluate_forest([1, 1])
