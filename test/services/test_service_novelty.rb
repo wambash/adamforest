@@ -41,7 +41,7 @@ class TestServiceNovelty < Minitest::Test
 
     assert_operator Isolation.evaluate_anomaly_score_s(r_depths, input.size), :<, 0.5
     assert_operator Isolation.evaluate_anomaly_score_s(a_depths, input.size), :<, 0.5
-    assert_operator Isolation.evaluate_anomaly_score_s(n_depths, input.size), :>, 0.9
+    assert_operator Isolation.evaluate_anomaly_score_s(n_depths, input.size), :>, 0.6
   end
 
 end

@@ -2,7 +2,7 @@
 
 module HelperMock
   def self.split_point(data)
-    min, max = data.flat_map { |x| x[0] }.minmax
+    min, max = data.map { |x| x[0] }.minmax
     (min + max) / 2.0
   end
 

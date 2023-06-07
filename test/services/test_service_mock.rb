@@ -11,6 +11,7 @@ class TestServiceMock < Minitest::Test
     data = [[2, 2], [3, 3], [7, 8]]
 
     split_point = HelperMock.split_point(data)
+    assert_equal (2 + 7) / 2.0, split_point
     res = HelperMock.group(data, split_point)
     assert_equal res[false], [[7, 8]]
   end
