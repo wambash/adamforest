@@ -4,13 +4,17 @@ require "bundler/setup"
 require "adamforest"
 require "adamforest/services/quicksort"
 require "adamforest/services/novelty"
+require "adamforest/services/isolation"
 
 include AdamForest
+include Isolation
+include Isolation::Numeric
+include Service
 
 puts "main"
 
 input = [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [2, 2]]
-forest = Forest.new(input, trees_count: 4)
+forest = Forest.new(input, trees_count: 4, forest_helper: Isolation::Isolation.new)
 # p forest.trees.map(&:to_h)
 # If instances return s very close to 1, then they are definitely anomalies,
 evaluation = forest.evaluate_forest([2, 2])
@@ -18,14 +22,14 @@ p evaluation
 
 depths = evaluation.map(&:depth)
 p depths
-s = Isolation.evaluate_anomaly_score_s(depths, input.size)
+s = IsolationNumeric.evaluate_anomaly_score_s(depths, input.size)
 p s
 
 p "______"
 evaluation = forest.evaluate_forest([1, 1])
 depths = evaluation.map(&:depth)
 p depths
-s = Isolation.evaluate_anomaly_score_s(depths, input.size)
+s = IsolationNumeric.evaluate_anomaly_score_s(depths, input.size)
 p s
 
 input = [5, 8, 3, 4, 2, 7]
@@ -36,5 +40,5 @@ p forest.evaluate_forest(6)
 
 
 input = [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [2, 2]]
-forest = Forest.new(input, trees_count: 4, forest_helper: Novelty)
+forest = Forest.new(input, trees_count: 4, forest_helper: Novelty::Novelty.new)
 forest.evaluate_forest([1, 1])
